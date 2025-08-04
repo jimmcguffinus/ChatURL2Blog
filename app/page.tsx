@@ -197,84 +197,122 @@ export default function Home() {
                   </div>
                 </div>
               ) : (
-                <form onSubmit={handleTransform} className="space-y-6">
+                                 <form onSubmit={handleTransform} className="space-y-6" aria-label="ChatGPT transformation form">
                   <div className="space-y-2">
                     <Label htmlFor="url">ChatGPT Share URL</Label>
-                    <Input
-                      id="url"
-                      type="url"
-                      placeholder=""
-                      value={formData.url}
-                      onChange={(e) => setFormData(prev => ({ ...prev, url: e.target.value }))}
-                      required
-                    />
+                                         <Input
+                       id="url"
+                       name="url"
+                       type="url"
+                       placeholder=""
+                       value={formData.url}
+                       onChange={(e) => setFormData(prev => ({ ...prev, url: e.target.value }))}
+                       required
+                       aria-describedby="url-description"
+                     />
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="speaker1">Speaker 1 Name</Label>
-                      <Input
-                        id="speaker1"
-                        value={formData.speaker1}
-                        onChange={(e) => setFormData(prev => ({ ...prev, speaker1: e.target.value }))}
-                      />
+                                             <Input
+                         id="speaker1"
+                         name="speaker1"
+                         value={formData.speaker1}
+                         onChange={(e) => setFormData(prev => ({ ...prev, speaker1: e.target.value }))}
+                         aria-describedby="speaker1-description"
+                       />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="speaker2">Speaker 2 Name</Label>
-                      <Input
-                        id="speaker2"
-                        value={formData.speaker2}
-                        onChange={(e) => setFormData(prev => ({ ...prev, speaker2: e.target.value }))}
-                      />
+                                             <Input
+                         id="speaker2"
+                         name="speaker2"
+                         value={formData.speaker2}
+                         onChange={(e) => setFormData(prev => ({ ...prev, speaker2: e.target.value }))}
+                         aria-describedby="speaker2-description"
+                       />
                     </div>
                   </div>
 
                   <div className="space-y-2">
                     <Label>Output Mode</Label>
-                    <RadioGroup
-                      value={formData.mode}
-                      onValueChange={(value) => setFormData(prev => ({ ...prev, mode: value as 'blog' | 'transcript' }))}
-                      className="grid grid-cols-2 gap-4"
-                    >
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="blog" id="blog" />
-                        <Label htmlFor="blog" className="flex items-center gap-2">
-                          <FileText className="w-4 h-4" />
-                          Blog Mode
+                                                              <RadioGroup
+                       value={formData.mode}
+                       onValueChange={(value) => setFormData(prev => ({ ...prev, mode: value as 'blog' | 'transcript' }))}
+                       className="grid grid-cols-2 gap-4"
+                       name="mode"
+                       aria-label="Output mode selection"
+                     >
+                                               <Label htmlFor="blog" className="flex items-center space-x-2 cursor-pointer">
+                          <RadioGroupItem 
+                            value="blog" 
+                            id="blog" 
+                            name="mode" 
+                            aria-describedby="blog-description" 
+                            aria-labelledby="blog-label"
+                            aria-label="Blog Mode"
+                          />
+                          <span id="blog-label" className="flex items-center gap-2">
+                            <FileText className="w-4 h-4" />
+                            Blog Mode
+                          </span>
                         </Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="transcript" id="transcript" />
-                        <Label htmlFor="transcript" className="flex items-center gap-2">
-                          <MessageSquare className="w-4 h-4" />
-                          Transcript Mode
+                                               <Label htmlFor="transcript" className="flex items-center space-x-2 cursor-pointer">
+                          <RadioGroupItem 
+                            value="transcript" 
+                            id="transcript" 
+                            name="mode" 
+                            aria-describedby="transcript-description" 
+                            aria-labelledby="transcript-label"
+                            aria-label="Transcript Mode"
+                          />
+                          <span id="transcript-label" className="flex items-center gap-2">
+                            <MessageSquare className="w-4 h-4" />
+                            Transcript Mode
+                          </span>
                         </Label>
-                      </div>
-                    </RadioGroup>
+                     </RadioGroup>
                   </div>
 
                   <div className="space-y-2">
                     <Label>View Style</Label>
-                    <RadioGroup
-                      value={formData.viewStyle}
-                      onValueChange={(value) => setFormData(prev => ({ ...prev, viewStyle: value as 'vertical' | 'cards' }))}
-                      className="grid grid-cols-2 gap-4"
-                    >
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="vertical" id="vertical" />
-                        <Label htmlFor="vertical">Vertical Scroll</Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="cards" id="cards" />
-                        <Label htmlFor="cards">Slide Cards</Label>
-                      </div>
-                    </RadioGroup>
+                                                              <RadioGroup
+                       value={formData.viewStyle}
+                       onValueChange={(value) => setFormData(prev => ({ ...prev, viewStyle: value as 'vertical' | 'cards' }))}
+                       className="grid grid-cols-2 gap-4"
+                       name="viewStyle"
+                       aria-label="View style selection"
+                     >
+                                               <Label htmlFor="vertical" className="flex items-center space-x-2 cursor-pointer">
+                          <RadioGroupItem 
+                            value="vertical" 
+                            id="vertical" 
+                            name="viewStyle" 
+                            aria-describedby="vertical-description" 
+                            aria-labelledby="vertical-label"
+                            aria-label="Vertical Scroll"
+                          />
+                          <span id="vertical-label">Vertical Scroll</span>
+                        </Label>
+                                               <Label htmlFor="cards" className="flex items-center space-x-2 cursor-pointer">
+                          <RadioGroupItem 
+                            value="cards" 
+                            id="cards" 
+                            name="viewStyle" 
+                            aria-describedby="cards-description" 
+                            aria-labelledby="cards-label"
+                            aria-label="Slide Cards"
+                          />
+                          <span id="cards-label">Slide Cards</span>
+                        </Label>
+                     </RadioGroup>
                   </div>
 
-                  <Button type="submit" className="w-full" size="lg">
-                    <Sparkles className="w-5 h-5 mr-2" />
-                    Transform Chat
-                  </Button>
+                                     <Button type="submit" className="w-full" size="lg" aria-describedby="submit-description">
+                     <Sparkles className="w-5 h-5 mr-2" />
+                     Transform Chat
+                   </Button>
                 </form>
               )}
             </CardContent>
@@ -329,24 +367,48 @@ export default function Home() {
                         ))}
                       </div>
                       
-                      <div className="flex gap-2 pt-4 border-t">
-                        <Button onClick={() => handleDownload('html')} variant="outline" size="sm">
-                          <Download className="w-4 h-4 mr-2" />
-                          HTML
-                        </Button>
-                        <Button onClick={() => handleDownload('pdf')} variant="outline" size="sm">
-                          <Download className="w-4 h-4 mr-2" />
-                          PDF
-                        </Button>
-                        <Button onClick={() => handleDownload('markdown')} variant="outline" size="sm">
-                          <Download className="w-4 h-4 mr-2" />
-                          MD
-                        </Button>
-                        <Button onClick={handleShare} variant="outline" size="sm">
-                          <Share2 className="w-4 h-4 mr-2" />
-                          Share
-                        </Button>
-                      </div>
+                                             <div className="flex gap-2 pt-4 border-t">
+                         <Button onClick={() => handleDownload('html')} variant="outline" size="sm">
+                           <Download className="w-4 h-4 mr-2" />
+                           HTML
+                         </Button>
+                         <Button onClick={() => handleDownload('pdf')} variant="outline" size="sm">
+                           <Download className="w-4 h-4 mr-2" />
+                           PDF
+                         </Button>
+                         <Button onClick={() => handleDownload('markdown')} variant="outline" size="sm">
+                           <Download className="w-4 h-4 mr-2" />
+                           MD
+                         </Button>
+                         <Button onClick={handleShare} variant="outline" size="sm">
+                           <Share2 className="w-4 h-4 mr-2" />
+                           Share
+                         </Button>
+                       </div>
+                       
+                       {result.tokenUsage && (
+                         <div className="mt-4 p-3 bg-muted/50 rounded-lg">
+                           <div className="flex items-center justify-between text-sm">
+                             <span className="text-muted-foreground">Token Usage:</span>
+                             <div className="flex gap-4 text-xs">
+                               <span>Input: {result.tokenUsage.promptTokens.toLocaleString()}</span>
+                               <span>Output: {result.tokenUsage.responseTokens.toLocaleString()}</span>
+                               <span>Total: {result.tokenUsage.totalTokens.toLocaleString()}</span>
+                               <span className={cn(
+                                 "font-medium",
+                                 result.tokenUsage.estimatedCost === 0 
+                                   ? "text-green-600" 
+                                   : "text-primary"
+                               )}>
+                                 {result.tokenUsage.estimatedCost === 0 
+                                   ? "FREE" 
+                                   : `$${result.tokenUsage.estimatedCost.toFixed(4)}`
+                                 }
+                               </span>
+                             </div>
+                           </div>
+                         </div>
+                       )}
                     </div>
                   )}
                   
@@ -400,6 +462,30 @@ export default function Home() {
                           Share
                         </Button>
                       </div>
+                      
+                      {result.tokenUsage && (
+                        <div className="mt-4 p-3 bg-muted/50 rounded-lg">
+                          <div className="flex items-center justify-between text-sm">
+                            <span className="text-muted-foreground">Token Usage:</span>
+                            <div className="flex gap-4 text-xs">
+                              <span>Input: {result.tokenUsage.promptTokens.toLocaleString()}</span>
+                              <span>Output: {result.tokenUsage.responseTokens.toLocaleString()}</span>
+                              <span>Total: {result.tokenUsage.totalTokens.toLocaleString()}</span>
+                              <span className={cn(
+                                "font-medium",
+                                result.tokenUsage.estimatedCost === 0 
+                                  ? "text-green-600" 
+                                  : "text-primary"
+                              )}>
+                                {result.tokenUsage.estimatedCost === 0 
+                                  ? "FREE" 
+                                  : `$${result.tokenUsage.estimatedCost.toFixed(4)}`
+                                }
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>

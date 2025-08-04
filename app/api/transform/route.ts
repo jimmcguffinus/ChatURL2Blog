@@ -15,14 +15,17 @@ export async function POST(request: NextRequest) {
     }
 
     const chatContent = await fetchChatContent(url)
-    const result = await transformContent(chatContent, {
+    const { result, tokenUsage } = await transformContent(chatContent, {
       speaker1: speaker1 || 'Human',
       speaker2: speaker2 || 'AI',
       mode,
       viewStyle,
     })
 
-    return NextResponse.json(result)
+    return NextResponse.json({
+      ...result,
+      tokenUsage,
+    })
   } catch (error) {
     console.error('Transform error:', error)
     return NextResponse.json(
@@ -121,14 +124,28 @@ Make sure the content is engaging, well-structured, and ready for publication.
     const response = await result.response
     const text = response.text()
 
+    // Extract token usage information
+    const tokenUsage = {
+      promptTokens: result.response.usageMetadata?.promptTokenCount || 0,
+      responseTokens: result.response.usageMetadata?.candidatesTokenCount || 0,
+      totalTokens: result.response.usageMetadata?.totalTokenCount || 0,
+      estimatedCost: calculateEstimatedCost(
+        result.response.usageMetadata?.promptTokenCount || 0,
+        result.response.usageMetadata?.candidatesTokenCount || 0
+      )
+    }
+
     try {
       const jsonMatch = text.match(/\{[\s\S]*\}/)
       if (jsonMatch) {
-        return JSON.parse(jsonMatch[0])
+        return {
+          result: JSON.parse(jsonMatch[0]),
+          tokenUsage
+        }
       }
       
       // Fallback response if JSON parsing fails
-      return options.mode === 'blog'
+      const fallbackResult = options.mode === 'blog'
         ? {
             blog: {
               title: 'Transformed Conversation',
@@ -151,6 +168,11 @@ Make sure the content is engaging, well-structured, and ready for publication.
               }
             ]
           }
+
+      return {
+        result: fallbackResult,
+        tokenUsage
+      }
     } catch (error) {
       throw new Error('Failed to parse AI response')
     }
@@ -158,4 +180,26 @@ Make sure the content is engaging, well-structured, and ready for publication.
     console.error('AI transformation error:', error)
     throw new Error('Failed to transform content with AI')
   }
+}
+
+// Helper function to calculate estimated cost
+function calculateEstimatedCost(promptTokens: number, responseTokens: number): number {
+  // Gemini 1.5 Pro pricing (as of 2024)
+  // Free tier: 15 requests per minute, 2M tokens per minute
+  // Paid tier: $3.50 per 1M input tokens, $10.50 per 1M output tokens
+  
+  // For most users, this will be free due to generous limits
+  const totalTokens = promptTokens + responseTokens
+  
+  // If under free tier limits, cost is $0
+  if (totalTokens <= 2000000) { // 2M token limit per minute
+    return 0
+  }
+  
+  // Only charge for tokens beyond the free tier
+  const excessTokens = totalTokens - 2000000
+  const inputCost = (promptTokens / 1000000) * 3.50
+  const outputCost = (responseTokens / 1000000) * 10.50
+  
+  return Math.round((inputCost + outputCost) * 100) / 100 // Round to 2 decimal places
 } 

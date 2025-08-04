@@ -124,6 +124,96 @@ wrangler pages deploy out --project-name chaturl2blog
 
 ---
 
+## 🔧 **Content Quality Improvements**
+
+### **Task: Rework System Prompt (15 minutes)**
+
+#### **Current Issues:**
+- Generic transformation prompts
+- Inconsistent output quality
+- Missing context awareness
+- No brand voice consideration
+
+#### **Goals:**
+- **Better Blog Structure**: More engaging titles, proper sections, SEO-friendly content
+- **Improved Transcripts**: Better speaker identification, cleaner formatting
+- **Context Awareness**: Understand conversation topics and adapt accordingly
+- **Brand Voice**: Consistent, professional tone across all outputs
+
+#### **Implementation:**
+**File:** `app/api/transform/route.ts`
+
+**New System Prompt Structure:**
+```typescript
+const systemPrompt = `You are an expert content transformer specializing in converting ChatGPT conversations into polished, professional content.
+
+CONTEXT ANALYSIS:
+- Identify the conversation topic and domain
+- Determine the appropriate tone and style
+- Recognize technical vs. casual discussions
+- Adapt output format based on content type
+
+BLOG MODE REQUIREMENTS:
+- Create compelling, SEO-friendly titles
+- Write engaging subtitles that hook readers
+- Structure content with clear sections and headings
+- Include relevant tags for discoverability
+- Maintain professional tone while being accessible
+- Add value through insights and explanations
+
+TRANSCRIPT MODE REQUIREMENTS:
+- Preserve conversation flow and context
+- Clean up formatting and remove artifacts
+- Maintain speaker authenticity
+- Add timestamps where appropriate
+- Ensure readability and clarity
+
+OUTPUT FORMAT:
+- Always return valid JSON
+- Use proper HTML formatting
+- Include metadata where relevant
+- Ensure mobile-friendly formatting
+
+QUALITY STANDARDS:
+- Professional, engaging writing
+- Accurate content preservation
+- Consistent formatting
+- SEO optimization for blogs
+- Accessibility considerations`
+```
+
+#### **Enhanced Prompt Variables:**
+```typescript
+const prompt = `
+${systemPrompt}
+
+CONVERSATION TOPIC: ${detectedTopic}
+DOMAIN: ${detectedDomain}
+TONE: ${detectedTone}
+
+ORIGINAL CONVERSATION:
+${content}
+
+TRANSFORMATION REQUEST:
+- Mode: ${mode}
+- Speaker 1: ${speaker1}
+- Speaker 2: ${speaker2}
+- View Style: ${viewStyle}
+
+OUTPUT REQUIREMENTS:
+${mode === 'blog' ? blogRequirements : transcriptRequirements}
+`
+```
+
+#### **Testing Plan:**
+- [ ] Test with technical conversations
+- [ ] Test with casual discussions
+- [ ] Test with educational content
+- [ ] Test with creative brainstorming
+- [ ] Validate JSON output consistency
+
+---
+
 ## 📋 **What Stays Unchanged**
 
 ### **Frontend Components**
@@ -162,12 +252,13 @@ wrangler pages deploy out --project-name chaturl2blog
 
 ---
 
-## ⚡ **Total Migration Time: ~20 minutes**
+## ⚡ **Total Migration Time: ~35 minutes**
 
 ### **Breakdown:**
 - **API Migration:** 5 minutes
 - **Deployment Setup:** 10 minutes  
 - **Testing:** 5 minutes
+- **System Prompt Rework:** 15 minutes
 
 ### **Risk Level: LOW**
 - Frontend remains identical

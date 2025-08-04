@@ -9,9 +9,17 @@ export interface TransformRequest {
   viewStyle: ViewStyle
 }
 
+export interface TokenUsage {
+  promptTokens: number
+  responseTokens: number
+  totalTokens: number
+  estimatedCost: number
+}
+
 export interface TransformResult {
   blog?: BlogContent
   transcript?: TranscriptExchange[]
+  tokenUsage?: TokenUsage
 }
 
 export interface BlogContent {
